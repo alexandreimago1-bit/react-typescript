@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+
 const Header = ({ title }) => {
   return (
     <div>
@@ -12,13 +13,13 @@ const Button = ({onClick, text}) => {
   return <button onClick={onClick}>{text}</button>
 }
 
-const StatKeep = ({ text, value }) => {
-  return(
-    <p>{text}: {value}</p>
-  );
-}
-const Percentages = ({text, value}) => {
-  return <p> {text}: {value}%</p>
+
+const StatisticLine = ({text, value}) => {
+  if(text == 'Positive'){
+    return <p>{text}: {value}%</p>
+  }else{
+  return <p> {text}: {value}</p>
+  }
 }
 
 const Statistics = ({good, neutral, bad,total, average, positive}) => {
@@ -27,12 +28,12 @@ if (total === 0){
 }else{
   return(
   <div>
-    <StatKeep text ='Good' value={good}/>
-    <StatKeep text ='Neutral' value={neutral}/>
-    <StatKeep text ='Bad' value={bad}/>
-    <Percentages text='Total' value={total}/>
-    <Percentages text='Average' value={average}/>
-    <Percentages text='Positive' value={positive}/>
+    <StatisticLine text ='Good' value={good}/>
+    <StatisticLine text ='Neutral' value={neutral}/>
+    <StatisticLine text ='Bad' value={bad}/>
+    <StatisticLine text='Total' value={total}/>
+    <StatisticLine text='Average' value={average}/>
+    <StatisticLine text='Positive' value={positive}/>
   </div>
   );
 }
