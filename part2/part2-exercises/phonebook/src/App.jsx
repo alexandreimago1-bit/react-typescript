@@ -1,11 +1,59 @@
 import { useState } from 'react'
+const HeaderDisplay = ({ text }) => {
+  return(
+    <h1>{text}</h1>
+  )
+}
+
+const Input = ({ value, onChange }) => (
+  <div>
+    <input value={value} onChange={onChange} />
+  </div>
+)
+
+const TextDisplay = ({text}) => {
+  return(<p>{text}</p>)
+}
+
+const Button = ({ type, text })=>{
+  return(<div>
+    <button type={type}>{text}</button>
+  </div>)
+}
+
+const PersonForm = ({onSubmit, newNameValue, newNameOnChange, newNumberValue, newNumberOnChange}) =>{
+  return(
+    <form onSubmit={onSubmit}>
+      <TextDisplay text='Name:'/>
+      <Input value={newNameValue} onChange={newNameOnChange}/>
+      <TextDisplay text='Number:'/>
+      <Input value={newNumberValue} onChange={newNumberOnChange}/>
+      <Button type='submit' text='add'/>
+    </form>
+  )
+}
+const Person = ({person}) =>{
+  return(
+    <p>{person.name} - {person.number}</p>
+  )
+}
+
+const Persons = ({personsToShow}) => {
+  return(
+    <div>
+        {personsToShow.map(person => 
+        <Person person={person} key={person.id}/>
+      )}
+    </div>
+  )
+}
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
+    { name: 'Arto Hellas', number: '040-123456', id: '1' },
+    { name: 'Ada Lovelace', number: '39-44-5323523', id: '2' },
+    { name: 'Dan Abramov', number: '12-43-234345', id: '3' },
+    { name: 'Mary Poppendieck', number: '39-23-6423122', id: '4' }
   ])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
@@ -51,38 +99,21 @@ const App = () => {
 
   return(
     <div>
-      <h2>Phonebook</h2>
+      <HeaderDisplay text ='Phonebook' />
       <div>
-        filter shown with: 
-        <input 
-        value={filterSearch}
-        onChange={handleFilter}
-        />
+        <TextDisplay text='filter shown with:'/> 
+        <Input value={filterSearch} onChange={handleFilter} />
       </div>
-      <form onSubmit={addPerson}>
-        <h2>Add Persons</h2>
-        <div>
-          name: <input 
-          value={newName}
-          onChange={handleNewName}
-          />
-        </div>
-        <div>
-          number: <input 
-          value={newNumber}
-          onChange={handleNewNumber}
-          />
-        </div>
-        <div>
-          <button type='submit'>add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      {personsToShow.map(person => 
-        <p key={person.id}>{person.name} - {person.number}</p>
-      )}
+      <HeaderDisplay text ='Add a Person' />
+      <PersonForm 
+      onSubmit={addPerson} 
+      newNameValue={newName} 
+      newNameOnChange={handleNewName}  
+      newNumberValue={newNumber} 
+      newNumberOnChange={handleNewNumber}/>
+      <HeaderDisplay text ='Numbers' />
+      <Persons personsToShow={personsToShow}/>
     </div>
-    
   )
 }
 export default App
