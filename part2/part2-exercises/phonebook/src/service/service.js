@@ -7,4 +7,9 @@ const getAll = () => {
     return request.then(response => response.data)
 }
 
-export default { getAll }
+const deletePerson = (id) => {
+    const request = axios.delete(`${baseURL} / ${id}`)
+    return request.then(response => response.data)
+}
+
+export default { getAll, deletePerson }

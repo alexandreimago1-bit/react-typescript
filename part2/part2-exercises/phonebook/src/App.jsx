@@ -35,17 +35,20 @@ const PersonForm = ({onSubmit, newNameValue, newNameOnChange, newNumberValue, ne
     </form>
   )
 }
-const Person = ({person}) =>{
+const Person = ({person, handleDelete}) =>{
   return(
-    <p>{person.name} - {person.number}</p>
+    <div>
+      <p>{person.name} - {person.number}</p>
+      <button onClick = {() => handleDelete(person.id) }>delete</button>
+    </div>  
   )
 }
 
-const Persons = ({personsToShow}) => {
+const Persons = ({personsToShow, handleDelete}) => {
   return(
     <div>
         {personsToShow.map(person => 
-        <Person person={person} key={person.id}/>
+        <Person person={person} key={person.id} handleDelete={handleDelete}/>
       )}
     </div>
   )
@@ -89,13 +92,21 @@ const App = () => {
             setPersons(persons.concat(response.data))
             console.log('promise fulfilled', response.data)
         })
-        
-      
     }
     setNewName('')
     setNewNumber('')
   }
 
+  const handleDelete = (id) => {
+      axios
+      .delete(`http://localhost:3001/persons/${id}`)
+      .then(() =>{
+      return setPersons(prevPersons => prevPersons.filter(person => person.id !== id)) })
+      .catch (error => {
+        alert(`Failed to delete person: ${error.message}`)})
+      
+    }
+  
   const handleNewName = (event) => {
     console.log(event.target.value)
     setNewName(event.target.value)
@@ -128,7 +139,7 @@ const App = () => {
       newNumberValue={newNumber} 
       newNumberOnChange={handleNewNumber}/>
       <HeaderDisplay text ='Numbers' />
-      <Persons personsToShow={personsToShow}/>
+      <Persons personsToShow={personsToShow} handleDelete={handleDelete}/>
     </div>
   )
 }

@@ -1,21 +1,6 @@
 {
   "persons": [
     {
-      "name": "Arto Hellas",
-      "number": "040-123456",
-      "id": "1"
-    },
-    {
-      "name": "Ada Lovelace",
-      "number": "39-44-5323523",
-      "id": "2"
-    },
-    {
-      "name": "Dan Abramov",
-      "number": "12-43-234345",
-      "id": "3"
-    },
-    {
       "name": "Mary Poppendieck",
       "number": "39-23-6423122",
       "id": "4"
@@ -24,21 +9,6 @@
       "name": "Andrea Alhian S. Berber",
       "number": "09998673968",
       "id": "iAXO_pO1GOM"
-    },
-    {
-      "name": "Alex Andrei B. Mago",
-      "number": "09150688579",
-      "id": "7J1a1F4A7GU"
-    },
-    {
-      "name": "Alex Andrei B. Mago",
-      "number": "09150688579",
-      "id": "6CyBBsfBH-A"
-    },
-    {
-      "name": "Alex Andrei B. Mago",
-      "number": "09150688579",
-      "id": "l4QomlTAxPY"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
