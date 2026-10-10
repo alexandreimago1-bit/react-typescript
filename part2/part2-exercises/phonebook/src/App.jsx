@@ -1,5 +1,7 @@
 import { useState,useEffect } from 'react'
 import axios from 'axios'
+import personsService from './service/service'
+
 const HeaderDisplay = ({ text }) => {
   return(
     <h1>{text}</h1>
@@ -58,10 +60,11 @@ const App = () => {
   useEffect(() => {
     console.log('effect')
     axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
+      personsService
+      .getAll()
+      .then(initialPersons => {
         console.log('promise fulfilled')
-        setPersons(response.data)
+        setPersons(initialPersons)
       })
   },[])
 
@@ -80,7 +83,14 @@ const App = () => {
       number: newNumber.trim(),
       id: String(persons.length + 1)
       }
-      setPersons(persons.concat(personObject))
+      axios
+        .post('http://localhost:3001/persons', personObject)
+        .then(response => {
+            setPersons(persons.concat(response.data))
+            console.log('promise fulfilled', response.data)
+        })
+        
+      
     }
     setNewName('')
     setNewNumber('')
