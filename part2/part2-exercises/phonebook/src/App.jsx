@@ -1,6 +1,6 @@
 import { useState,useEffect } from 'react'
-import axios from 'axios'
 import personsService from './service/service'
+import Notification  from './component/Notification'
 
 const HeaderDisplay = ({ text }) => {
   return(
@@ -59,10 +59,10 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const  [filterSearch, setFilterSearch] = useState('')
+  const [message, setMessage] = useState(null)
 
   useEffect(() => {
     console.log('effect')
-    axios
       personsService
       .getAll()
       .then(initialPersons => {
@@ -73,33 +73,57 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault()
-    const match = persons.some( person => person.name === newName)
-    if (match){
-      alert(`${newName} is already added to phonebook`)
-    }else if (newName.trim() === ''){
-      alert(`The name you entered is invalid`)
-    } else if (newNumber.trim() === ''){
-      alert(`The number you entered is invalid`)
-    }else{
-      const personObject = {
-      name: newName.trim(),
-      number: newNumber.trim(),
-      id: String(persons.length + 1)
-      }
-      axios
-        .post('http://localhost:3001/persons', personObject)
-        .then(response => {
-            setPersons(persons.concat(response.data))
-            console.log('promise fulfilled', response.data)
-        })
+    personsService
+      .getAll()
+      .then(data =>{ 
+        const cleanName = newName.trim().toLowerCase()
+        const nameExists = data.find(person => person.name.trim().toLowerCase() === cleanName) 
+          console.log('Fresh server data:', data)
+          console.log('Name found:', nameExists)
+        if (nameExists){
+          const proceed = window.confirm(`${nameExists.name} is already in the phonebook, do you want to replace the old number with a new one?`)
+          if (proceed){
+            const personObject = {
+            name: newName.trim(),
+            number: newNumber.trim(),
+            }
+            personsService
+              .update(nameExists.id,personObject)
+              .then(newPerson => {
+                  setPersons(prev => prev.map(p => p.id === newPerson.id ? newPerson : p))
+                  setMessage(`Updated ${newPerson.name}'s number`)
+                  setTimeout(() => {setMessage(null)},5000)
+                  console.log('promise fulfilled', newPerson)
+              })
+              .catch(error => {
+                setMessage(`${newName} doesn't Exist`)
+              })
+          }
+        }else{
+            const personObject = {
+            name: newName.trim(),
+            number: newNumber.trim(),
+            }
+            personsService
+              .create(personObject)
+              .then(newPerson => {
+                  setPersons(persons.concat(newPerson))
+                  setMessage(`Added ${newPerson.name}`)
+                  setTimeout(() => {
+                    setMessage(null)
+                  }, 5000)
+                  console.log('promise fulfilled', newPerson)
+              })
     }
+  })
+
     setNewName('')
-    setNewNumber('')
-  }
+    setNewNumber('')}
+  
 
   const handleDelete = (id) => {
-      axios
-      .delete(`http://localhost:3001/persons/${id}`)
+      personsService
+      .deletePerson(id)
       .then(() =>{
       return setPersons(prevPersons => prevPersons.filter(person => person.id !== id)) })
       .catch (error => {
@@ -128,6 +152,7 @@ const App = () => {
     <div>
       <HeaderDisplay text ='Phonebook' />
       <div>
+        <Notification message={message} />
         <TextDisplay text='filter shown with:'/> 
         <Input value={filterSearch} onChange={handleFilter} />
       </div>
