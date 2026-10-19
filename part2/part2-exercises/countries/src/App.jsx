@@ -28,6 +28,18 @@ const CountryDetails = ({country}) => {
   </div> 
   )}
 
+
+  const CountryList = ({countriesToShow, handleSelectCountry, selectCountry}) => {
+    return(
+      countriesToShow.map(country => (
+      <div key={country.cca3}>{country.name.common}
+      <button  onClick={()=>{handleSelectCountry(country.cca3)}}>Show</button>
+      {selectCountry === country.cca3 && ( <CountryDetails country={country}/> )}
+      </div>
+      ))
+    )
+  }
+
 const App = () => {
   const [filterSearch, setFilterSearch] = useState('')
   const [countries, setCountries] = useState([])
@@ -45,26 +57,22 @@ const App = () => {
   const handleSetSearch = (event) => {
     console.log(event.target.value)
     setFilterSearch(event.target.value)
+    setSelectCountry('')
   }
   const handleSelectCountry = (cca3) =>{
     console.log(cca3)
     setSelectCountry(cca3)
   }
-const countriesToShow = countries.filter(country =>
-  country.name.common.toLowerCase().includes(filterSearch.toLowerCase())
-)
+  const countriesToShow = countries.filter(country =>
+    country.name.common.toLowerCase().includes(filterSearch.toLowerCase())
+  )
 
 let content
 
 if (countriesToShow.length > 10) {
   content = <p>Too many matches, specify another filter.</p>
 } else if (countriesToShow.length > 1) {
-  content = countriesToShow.map(country => (
-    <div key={country.cca3}>{country.name.common}
-    <button  onClick={()=>{handleSelectCountry(country.cca3)}}>Show</button>
-    {selectCountry === country.cca3 && ( <CountryDetails country={country}/> )}
-    </div>
-  ))
+  content = <CountryList countriesToShow={countriesToShow} handleSelectCountry={handleSelectCountry} selectCountry={selectCountry}/>
 } else if (countriesToShow.length === 0) {
   content = ''
 }else if (countriesToShow.length === 1){
