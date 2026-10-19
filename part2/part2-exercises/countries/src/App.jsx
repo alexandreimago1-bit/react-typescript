@@ -1,6 +1,33 @@
 import { useState,useEffect } from "react";
 import axios from "axios";
 
+const Search = ({filterSearch, handleSetSearch}) => {
+  return(
+    <div>
+        <label htmlFor="countryInput">find countries</label>
+        <input type="text" id="countryInput" value={filterSearch} onChange={handleSetSearch}/>
+    </div>
+  )
+} 
+
+const CountryDetails = ({country}) => {
+  return(    
+  <div>
+      <h1>{country.name.common}</h1>
+      <div>
+        <p>capital: {country.capital[0]}</p>
+        <p>area: {country.area}</p>
+      </div>
+      <h2>Languages</h2>
+      <ul>
+        {Object.values(country.languages).map(language => 
+          (<li key={language}>{language}</li>)
+        )}
+      </ul>
+      <img src={country.flags.png} alt={country.flags.alt}/>
+  </div> 
+  )}
+
 const App = () => {
   const [filterSearch, setFilterSearch] = useState('')
   const [countries, setCountries] = useState([])
@@ -35,47 +62,14 @@ if (countriesToShow.length > 10) {
   content = countriesToShow.map(country => (
     <div key={country.cca3}>{country.name.common}
     <button  onClick={()=>{handleSelectCountry(country.cca3)}}>Show</button>
-    {selectCountry === country.cca3 && (
-          <div>
-      <h1>{country.name.common}</h1>
-      <div>
-        <p>capital: {country.capital[0]}</p>
-        <p>area: {country.area}</p>
-      </div>
-      <h2>Languages</h2>
-      <ul>
-        {Object.values(country.languages).map(language => 
-          (<div>
-            <li key={language}>{language}</li>
-          </div>)
-        )}
-      </ul>
-      <img src={country.flags.png} alt={country.flags.alt}/>
-    </div> 
-    )}
+    {selectCountry === country.cca3 && ( <CountryDetails country={country}/> )}
     </div>
   ))
 } else if (countriesToShow.length === 0) {
   content = ''
 }else if (countriesToShow.length === 1){
   let country = countriesToShow[0]
-  content =     
-    <div>
-      <h1>{country.name.common}</h1>
-      <div>
-        <p>capital: {country.capital[0]}</p>
-        <p>area: {country.area}</p>
-      </div>
-      <h2>Languages</h2>
-      <ul>
-        {Object.values(country.languages).map(language => 
-          (<div>
-            <li key={language}>{language}</li>
-          </div>)
-        )}
-      </ul>
-      <img src={country.flags.png} alt={country.flags.alt}/>
-    </div> 
+  content = <CountryDetails country = {country}/>
 }
 
   return (
@@ -83,8 +77,7 @@ if (countriesToShow.length > 10) {
       <h1>
         Countries
       </h1>
-        <label htmlFor="countryInput">find countries</label>
-        <input type="text" id="countryInput" value={filterSearch} onChange={handleSetSearch}/>
+        <Search filterSearch={filterSearch} handleSetSearch={handleSetSearch}/>
         <div>
           {content}
         </div>
