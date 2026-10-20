@@ -1,7 +1,6 @@
 import { useState,useEffect } from "react";
 import  countriesService from './service/countriesService'
 
-
 const Search = ({filterSearch, handleSetSearch}) => {
   return(
     <div>
