@@ -1,5 +1,6 @@
 import { useState,useEffect } from "react";
-import axios from "axios";
+import  countriesService from './service/countriesService'
+
 
 const Search = ({filterSearch, handleSetSearch}) => {
   return(
@@ -40,6 +41,21 @@ const CountryDetails = ({country}) => {
     )
   }
 
+  const Content = ({countriesToShow, handleSelectCountry, selectCountry}) => {
+    let content
+      if (countriesToShow.length > 10) {
+      content = <p>Too many matches, specify another filter.</p>
+    } else if (countriesToShow.length > 1) {
+      content = <CountryList countriesToShow={countriesToShow} handleSelectCountry={handleSelectCountry} selectCountry={selectCountry}/>
+    } else if (countriesToShow.length === 0) {
+      content = ''
+    }else if (countriesToShow.length === 1){
+      let country = countriesToShow[0]
+      content = <CountryDetails country = {country}/>
+    }
+    return content
+      }
+
 const App = () => {
   const [filterSearch, setFilterSearch] = useState('')
   const [countries, setCountries] = useState([])
@@ -47,11 +63,11 @@ const App = () => {
 
   useEffect(() =>{
     console.log('effect')
-    axios
-    .get('https://studies.cs.helsinki.fi/restcountries/api/all')
+    countriesService
+    .getAll()
     .then(initialCountries => {
       console.log('promise fulfilled')
-      setCountries(initialCountries.data)
+      setCountries(initialCountries)
     })
   } ,[])
   const handleSetSearch = (event) => {
@@ -67,18 +83,6 @@ const App = () => {
     country.name.common.toLowerCase().includes(filterSearch.toLowerCase())
   )
 
-let content
-
-if (countriesToShow.length > 10) {
-  content = <p>Too many matches, specify another filter.</p>
-} else if (countriesToShow.length > 1) {
-  content = <CountryList countriesToShow={countriesToShow} handleSelectCountry={handleSelectCountry} selectCountry={selectCountry}/>
-} else if (countriesToShow.length === 0) {
-  content = ''
-}else if (countriesToShow.length === 1){
-  let country = countriesToShow[0]
-  content = <CountryDetails country = {country}/>
-}
 
   return (
     <div>
@@ -87,7 +91,7 @@ if (countriesToShow.length > 10) {
       </h1>
         <Search filterSearch={filterSearch} handleSetSearch={handleSetSearch}/>
         <div>
-          {content}
+          <Content handleSelectCountry={handleSelectCountry} countriesToShow={countriesToShow} selectCountry={selectCountry}/>
         </div>
     </div>
   )
