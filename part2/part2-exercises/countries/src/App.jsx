@@ -11,6 +11,17 @@ const Search = ({filterSearch, handleSetSearch}) => {
 } 
 
 const CountryDetails = ({country}) => {
+  const [weather, setWeather] = useState(null)
+  useEffect(()=>{
+    countriesService
+    .getWeather(country.capitalInfo.latlng[0],country.capitalInfo.latlng[1])
+    .then(initialResponse => {
+      console.log('promise fulfilled')
+      setWeather(initialResponse)
+    })
+  },[country])
+
+    console.log(weather)
   return(    
   <div>
       <h1>{country.name.common}</h1>
@@ -25,6 +36,9 @@ const CountryDetails = ({country}) => {
         )}
       </ul>
       <img src={country.flags.png} alt={country.flags.alt}/>
+      <div>
+        
+      </div>
   </div> 
   )}
 
