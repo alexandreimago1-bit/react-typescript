@@ -10,6 +10,17 @@ const Search = ({filterSearch, handleSetSearch}) => {
   )
 } 
 
+  const WeatherDetails = ({weather,capital}) => {
+    return(
+      <div>
+        <h1>Weather in {capital}</h1>
+        <p>Temperature - {weather.main.temp}</p>
+        <p>Wind - {weather.wind.speed}</p>
+        <img src = {`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`} alt="" />
+      </div>
+    )
+  }
+
 const CountryDetails = ({country}) => {
   const [weather, setWeather] = useState(null)
   useEffect(()=>{
@@ -37,10 +48,11 @@ const CountryDetails = ({country}) => {
       </ul>
       <img src={country.flags.png} alt={country.flags.alt}/>
       <div>
-        
+        { weather ?  <WeatherDetails weather={weather} capital={country.capital[0]}/> : null }
       </div>
   </div> 
   )}
+
 
 
   const CountryList = ({countriesToShow, handleSelectCountry, selectCountry}) => {
